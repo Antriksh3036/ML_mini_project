@@ -1,32 +1,30 @@
-#linear Regression
-
-
+import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error,mean_absolute_error,root_mean_squared_error
+from constants import display_data_dictionary
 
+st.title("⚖️ Fat Percentage Predictor")
+
+
+with st.expander("📚 Data Dictionary - What do the options mean?"):
+    display_data_dictionary()
 df = pd.read_csv("preprocessed_gym.csv")
 
-model = LinearRegression()
 
-X = df[['Age', 'Gender', 'Height (m)','Weight (kg)', 'BMI', 'Avg_BPM', 'Medical_Condition', 'Workout_Frequency (days/week)','Experience_Level','Diet_Type','Protein_Intake (g/day)','Sleep_Hours_Per_Day','Calories_Burned']]
+features = ['Age', 'Gender', 'Height (m)','Weight (kg)', 'BMI', 'Avg_BPM', 'Medical_Condition', 
+            'Workout_Frequency (days/week)','Experience_Level','Diet_Type','Protein_Intake (g/day)',
+            'Sleep_Hours_Per_Day','Calories_Burned']
+X = df[features]
 y = df['Fat_Percentage']
+model = LinearRegression().fit(X, y)
 
-X_train,X_test,y_train,y_test = train_test_split(X,y,random_state=42,test_size=0.2)
+st.write("Enter your full physiological and workout profile:")
 
-model.fit(X_train,y_train)
-predicted = model.predict(X_test)
+inputs = []
+for feat in features:
+    val = st.number_input(f"Enter {feat}", value=float(df[feat].mean()))
+    inputs.append(val)
 
-mse = mean_squared_error(y_test,predicted)
-mae = mean_absolute_error(y_test,predicted)
-rmse = root_mean_squared_error(y_test,predicted)
-
-print("mse:",mse)
-print("mae:",mae)
-print("rmse:",rmse)
-
-plt.plot(y_test,y_test)
-plt.scatter(y_test,predicted)
-plt.show()
+if st.button("Estimate Fat Percentage"):
+    res = model.predict([inputs])
+    st.info(f"Predicted Fat Percentage: {res[0]:.2f}%")
