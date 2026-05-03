@@ -35,15 +35,18 @@ with col1:
         if feat == 'Gender':
             gender_label = st.selectbox("Gender", categorical_cols['Gender'])
             val = int(get_code('Gender', gender_label))
+        elif feat == 'Medical_Condition':
+            med_label = st.selectbox("Medical Condition", categorical_cols['Medical_Condition'])
+            val = int(get_code('Medical_Condition', med_label))
         else:
             val = st.number_input(f"Enter {feat}", value=float(df[feat].mean()))
         inputs.append(val)
 
 with col2:
     for feat in features[7:]:
-        if feat == 'Medical_Condition':
-            med_label = st.selectbox("Medical Condition", categorical_cols['Medical_Condition'])
-            val = int(get_code('Medical_Condition', med_label))
+        if feat == 'Experience_Level':
+            exp_label = st.selectbox("Experience Level", ['1', '2', '3'])
+            val = int(exp_label)
         elif feat == 'Diet_Type':
             diet_label = st.selectbox("Diet Type", categorical_cols['Diet_Type'])
             val = int(get_code('Diet_Type', diet_label))
